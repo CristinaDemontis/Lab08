@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.tdp.extflightdelays.model.Airline;
 import it.polito.tdp.extflightdelays.model.Airport;
+import it.polito.tdp.extflightdelays.model.CoppieAeroporti;
 import it.polito.tdp.extflightdelays.model.Flight;
 
 public class ExtFlightDelaysDAO {
@@ -91,4 +93,49 @@ public class ExtFlightDelaysDAO {
 			throw new RuntimeException("Error Connection Database");
 		}
 	}
+	
+	
+	public List<CoppieAeroporti> getallCoppieDistanzaPredefinita(Map<Integer, Airport> mappa){
+		
+		String sql = "SELECT ORIGIN_AIRPORT_ID, DESTINATION_AIRPORT_ID, AVG(DISTANCE) AS media, COUNT(*) AS cnt "
+				+ "FROM flights "
+				+ "GROUP BY ORIGIN_AIRPORT_ID, DESTINATION_AIRPORT_ID";
+		List<CoppieAeroporti> result = new ArrayList<>(); 
+
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				Integer id_P = rs.getInt("ORIGIN_AIRPORT_ID");
+				Integer id_A = rs.getInt("DESTINATION_AIRPORT_ID");
+				CoppieAeroporti c = new CoppieAeroporti(mappa.get(id_P), mappa.get(id_A), rs.getInt("media"), rs.getInt("cnt"));
+				result.add(c); 	
+			}
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
+		
+		
+		 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
 }
