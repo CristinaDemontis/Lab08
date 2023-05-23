@@ -45,7 +45,14 @@ public class CoppieAeroporti {
 
 	public void setCnt(int cnt) {
 		this.cnt = cnt;
+	}
+
+	@Override
+	public String toString() {
+		return "Aeroporto di partenza: " + partenza.getAirportName() + ", Aeroporto di arrivo: " + arrivo.getAirportName() + ", la distanza del grafo è: " + distanza +"\n";
 	} 
+	
+	
 	
 	
 

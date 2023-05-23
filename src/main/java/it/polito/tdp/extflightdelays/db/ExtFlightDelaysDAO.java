@@ -98,7 +98,7 @@ public class ExtFlightDelaysDAO {
 	public List<CoppieAeroporti> getallCoppieDistanzaPredefinita(Map<Integer, Airport> mappa){
 		
 		String sql = "SELECT ORIGIN_AIRPORT_ID, DESTINATION_AIRPORT_ID, AVG(DISTANCE) AS media, COUNT(*) AS cnt "
-				+ "FROM flights "
+				+ "FROM flights WHERE DISTANCE >3500 "
 				+ "GROUP BY ORIGIN_AIRPORT_ID, DESTINATION_AIRPORT_ID";
 		List<CoppieAeroporti> result = new ArrayList<>(); 
 

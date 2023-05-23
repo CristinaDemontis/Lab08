@@ -3,6 +3,7 @@ package it.polito.tdp.extflightdelays.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +45,10 @@ public class Model {
 		List<CoppieAeroporti> archi = archiPartenzaRitorno(archiDaSistemare); 
 		
 		for(CoppieAeroporti c : archi) {
+			double distCalcolata = c.getDistanza(); 
 			if(c.getDistanza() >= distanza_min) {
-				DefaultWeightedEdge e = this.grafo.addEdge(c.getPartenza(), c.getArrivo());
-				if(e != null) {
-					this.grafo.setEdgeWeight(e, c.getDistanza());
-				}
+	//			DefaultWeightedEdge e = this.grafo.addEdge(c.getPartenza(), c.getArrivo());
+				Graphs.addEdge(this.grafo, c.getPartenza(), c.getArrivo(), c.getDistanza()); 				
 			}
 		}
 	
@@ -70,7 +70,7 @@ public class Model {
 				int idPP = cc.getPartenza().getId() ; 
 				int idAA = cc.getArrivo().getId();
 				if(idP == idAA && idA == idPP) {
-					double media = ((c.getDistanza()*c.getCnt()) /cc.getDistanza()*cc.getCnt());
+					double media = ((c.getDistanza()*c.getCnt() + cc.getDistanza()*cc.getCnt())/(c.getCnt()+cc.getCnt()));
 					CoppieAeroporti n = new CoppieAeroporti(c.getPartenza(),c.getArrivo(),media,0);
 					res.add(n); 
 				}
@@ -78,6 +78,26 @@ public class Model {
 		}
 		
 		return res; 
+	}
+
+
+	public Graph<Airport, DefaultWeightedEdge> getGrafo() {
+		return this.grafo;
+	}
+	
+	public Set<CoppieAeroporti> setArchi(Graph<Airport, DefaultWeightedEdge> grafo){
+		Set<DefaultWeightedEdge> archi = grafo.edgeSet();
+		Set<CoppieAeroporti> set = new HashSet<>();  
+		for(DefaultWeightedEdge d: archi) {
+			CoppieAeroporti c = new CoppieAeroporti(grafo.getEdgeSource(d), grafo.getEdgeTarget(d),grafo.getEdgeWeight(d), 0); 
+			set.add(c); 
+		}
+		return set; 
+	}
+
+
+	public void setGrafo(Graph<Airport, DefaultWeightedEdge> grafo) {
+		this.grafo = grafo;
 	}
 		
 		
